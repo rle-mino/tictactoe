@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import map from './map';
+import game from './game';
 
 export default combineReducers({
-  map,
+  game,
 });

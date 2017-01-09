@@ -20,7 +20,7 @@ const webpackConfig = {
     publicPath: `/assets/`,
   },
   entry: {
-    app: './src/client/index.js',
+    app: './src/index.js',
   },
   module: {
     rules: [

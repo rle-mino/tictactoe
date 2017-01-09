@@ -1,0 +1,50 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "engines": {
+    "node": ">=5",
+    "npm": ">=3"
+  },
+  "scripts": {
+    "start-prod": "NODE_ENV=production npm run prod",
+    "prod": "node ./build/server.js",
+    "clean": "rm -rf build && mkdir build",
+    "build-server": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-server",
+    "start": "NODE_ENV=development nodemon --exec 'babel-node ./src/server.js'",
+    "debug": "NODE_ENV=development nodemon --exec 'npm run lint && npm run build && node --debug ./build/server.js'",
+    "lint": "eslint -c .eslintrc src",
+    "force": "kill -9 $(lsof -i tcp:6789 | sed -n 2p | awk -F ' ' '{print $2}')"
+  },
+  "author": "rle",
+  "license": "MIT",
+  "babel": {
+    "presets": [
+      [
+        "latest",
+        {
+          "modules": false
+        }
+      ],
+      "stage-0"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "eslint": "^3.13.0",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "nodemon": "^1.11.0"
+  },
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "socket.io": "^1.7.2"
+  }
+}

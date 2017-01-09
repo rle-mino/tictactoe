@@ -1,31 +1,5 @@
-import * as patterns from './patterns';
-
-const checkWin = (map) => {
-  let toFind;
-
-  toFind = patterns.line(map, 0);
-  if (toFind) return toFind;
-  toFind = patterns.line(map, 3);
-  if (toFind) return toFind;
-  toFind = patterns.line(map, 6);
-  if (toFind) return toFind;
-
-  toFind = patterns.column(map, 0);
-  if (toFind) return toFind;
-  toFind = patterns.column(map, 1);
-  if (toFind) return toFind;
-  toFind = patterns.column(map, 2);
-  if (toFind) return toFind;
-
-
-  toFind = patterns.checkCrookedUpwards(map);
-  if (toFind) return toFind;
-
-  toFind = patterns.checkCrookedDownwards(map);
-  return toFind;
-};
-
-const checkFull = map => map.indexOf(null) === -1;
+import initialState from '../../initialState';
+import * as checkers from './checkers';
 
 const putPiece = (state, where) => {
   if (state.win) return state;
@@ -41,8 +15,10 @@ const putPiece = (state, where) => {
   const shouldNotUpdate = !!newMap.find(cell => cell === -1);
   if (shouldNotUpdate) return state;
 
-  const win = checkWin(newMap);
-  const full = checkFull(newMap);
+  const win = checkers.win(newMap);
+  const full = checkers.full(newMap);
+
+  const { playing, playerName1, playerName2 } = state.player;
 
   return {
     ...state,
@@ -50,7 +26,8 @@ const putPiece = (state, where) => {
     full,
     map: newMap,
     player: {
-      playing: state.player.playing === 1 ? 2 : 1,
+      ...state.player,
+      playing: playing === playerName1 ? playerName2 : playerName1,
     },
   };
 };
@@ -59,10 +36,16 @@ export const dispatchPutPiece = payload => (dispatch) => {
   dispatch({ type: 'PUT_PIECE', payload });
 };
 
+export const dispatchResetMap = () => (dispatch) => {
+  dispatch({ type: 'RESET_MAP' });
+};
+
 export default (state = {}, action) => {
   switch (action.type) {
     case 'PUT_PIECE':
       return putPiece(state, action.payload);
+    case 'RESET_MAP':
+      return initialState.game;
     default: return state;
   }
 };

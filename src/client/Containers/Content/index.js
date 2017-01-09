@@ -1,8 +1,9 @@
 import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import colors from '../../colors.json';
-import { dispatchPutPiece } from '../../modules/game';
+import drawCells from '../../components/Cell';
+import ReplayButton from '../../components/ReplayButton';
+import PlayingPlayer from '../../components/PlayingPlayer';
 
 const ContentContainer = styled.div`
   flex-grow: 1;
@@ -24,22 +25,6 @@ const MapContainer = styled.ul`
   padding: 0;
   margin: 0;
   border: 1px solid black;
-`;
-
-const Cell = styled.li`
-  flex-basis: 33.33%;
-  height: 20vh;
-  line-height: 20vh;
-  vertical-align: middle;
-  cursor: pointer;
-  text-align: center;
-  transition: all .2s;
-  list-style: none;
-
-  &:hover {
-    background-color: ${colors.lightBlue};
-    color: white;
-  }
 `;
 
 const Top = styled.span`
@@ -78,38 +63,28 @@ const Right = styled.span`
   width: 1px;
 `;
 
-const SpeChar = styled.span`
-  font-size: ${props => (props.higher ? '1000%' : '600%')};
-`;
-
-const WinnerDisplay = styled.h4`
-  font-size: 50px;
+const WinnerDisplay = styled.div`
   height: 40px;
   margin: 30px 0 50px 0;
   padding: 0;
+  display: flex;
 `;
 
-
-const Cross = () => <SpeChar>&#10010;</SpeChar>;
-const Circle = () => <SpeChar higher>&#x025CB;</SpeChar>;
-
-const drawCells = (game, dispatch) => game.map.map((cell, key) => {
-  const putSymbol = () => {
-    dispatch(dispatchPutPiece(key));
-  };
-
-  return (
-    <Cell key={key} onClick={putSymbol}>
-      {(cell === 1 && <Cross />) || (cell === 2 && <Circle />)}
-    </Cell>
-  );
-});
-
+const WinnerMessage = styled.span`
+  font-size: 50px;
+  text-transform: uppercase;
+`;
 const Content = ({ game, dispatch }) =>
   <ContentContainer>
     <WinnerDisplay>
-      {(game.win && `PLAYER ${game.win} WINS`) || (game.full && 'DRAW')}
+      <WinnerMessage>{(game.win && `${game.win} WINS`) || (game.full && 'DRAW')}</WinnerMessage>
+      <ReplayButton visible={!!(game.win || game.full)} dispatch={dispatch} />
     </WinnerDisplay>
+    <PlayingPlayer
+      playingPlayer={game.player.playing}
+      player1={game.player.playerName1}
+      player2={game.player.playerName2}
+    />
     <MapContainer>
       <Top />
       <Left />

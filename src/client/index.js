@@ -12,7 +12,9 @@ console.log('mounting react app ...');  // eslint-disable-line no-console
 const store = createStore(
   reducers,
   initialState,
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(
+    thunkMiddleware,
+  ),
 );
 
 const Root = (

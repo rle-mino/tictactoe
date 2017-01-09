@@ -12,7 +12,9 @@ export default {
       null,
     ],
     player: {
-      playing: 1,
+      playing: 'player1',
+      playerName1: 'player1',
+      playerName2: 'player2',
     },
     win: false,
     full: false,

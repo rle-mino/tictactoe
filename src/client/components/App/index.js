@@ -22,19 +22,4 @@ const App = () =>
   </Layout>
 ;
 
-/*
-src
-|-- components
-  |-- AComponent
-  |-- ASecondComponent
-  |-- ...
-|-- containers
-  |-- AContainer
-  |-- ASecondContainer
-|-- modules
-  |-- index.js (all the modules exported as a single object)
-  |-- AModule (which includes the reducer (export default) and he's actions (export))
-  |-- ASecondModule (same as before)
-*/
-
 export default App;

@@ -1,6 +1,6 @@
+/* eslint "react/no-array-index-key": "off" */
 import React from 'react';
 import styled from 'styled-components';
-import { dispatchPutPiece } from '../../modules/game';
 import colors from '../../colors.json';
 import { Cross, Circle } from '../../components/SpeChars';
 
@@ -21,14 +21,10 @@ const Cell = styled.li`
   }
 `;
 
-const drawCells = (game, dispatch) => game.map.map((cell, key) => {
+const drawCells = (game, putPiece) => game.map.map((cell, key) => {
   const { playerName1, playerName2 } = game.player;
-  const putSymbol = () => {
-    dispatch(dispatchPutPiece(key));
-  };
-
   return (
-    <Cell key={key} onClick={putSymbol}>
+    <Cell key={key} onClick={() => putPiece(key)}>
       {(cell === playerName1 && <Cross />) || (cell === playerName2 && <Circle />)}
     </Cell>
   );

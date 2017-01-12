@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from '../Header';
 import Footer from '../Footer';
-import Content from '../../Containers/Content';
+import Content from '../../containers/Content';
 
 const Layout = styled.div`
   padding: 0;

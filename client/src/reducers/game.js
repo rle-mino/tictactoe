@@ -1,5 +1,5 @@
-import initialState from '../../initialState';
-import * as checkers from './checkers';
+import * as checkers from '../helpers/game/checkers';
+import initialState from '../initialState';
 
 const putPiece = (state, where) => {
   if (state.win) return state;
@@ -30,14 +30,6 @@ const putPiece = (state, where) => {
       playing: playing === playerName1 ? playerName2 : playerName1,
     },
   };
-};
-
-export const dispatchPutPiece = payload => (dispatch) => {
-  dispatch({ type: 'PUT_PIECE', payload });
-};
-
-export const dispatchResetMap = () => (dispatch) => {
-  dispatch({ type: 'RESET_MAP' });
 };
 
 export default (state = {}, action) => {

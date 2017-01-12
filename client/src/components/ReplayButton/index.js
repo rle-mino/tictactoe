@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 import styled from 'styled-components';
-import { dispatchResetMap } from '../../modules/game';
 import colors from '../../colors.json';
 
 const ReButton = styled.button`
@@ -20,15 +19,15 @@ const ReButton = styled.button`
   }
 `;
 
-const ReplayButton = ({ visible, dispatch }) =>
-  <ReButton visible={visible} onClick={() => dispatch(dispatchResetMap())}>
+const ReplayButton = ({ visible, resetMap }) =>
+  <ReButton visible={visible} onClick={resetMap}>
     &#x021BB;
   </ReButton>
 ;
 
 ReplayButton.propTypes = {
   visible: PropTypes.bool.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  resetMap: PropTypes.func.isRequired,
 };
 
 export default ReplayButton;

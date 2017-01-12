@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as allTheActions from '../../actions/game';
 import drawCells from '../../components/Cell';
 import ReplayButton from '../../components/ReplayButton';
 import PlayingPlayer from '../../components/PlayingPlayer';
@@ -74,11 +76,11 @@ const WinnerMessage = styled.span`
   font-size: 50px;
   text-transform: uppercase;
 `;
-const Content = ({ game, dispatch }) =>
+const Content = ({ game, actions }) =>
   <ContentContainer>
     <WinnerDisplay>
       <WinnerMessage>{(game.win && `${game.win} WINS`) || (game.full && 'DRAW')}</WinnerMessage>
-      <ReplayButton visible={!!(game.win || game.full)} dispatch={dispatch} />
+      <ReplayButton visible={!!(game.win || game.full)} resetMap={actions.resetMap} />
     </WinnerDisplay>
     <PlayingPlayer
       playingPlayer={game.player.playing}
@@ -90,16 +92,19 @@ const Content = ({ game, dispatch }) =>
       <Left />
       <Right />
       <Bottom />
-      {drawCells(game, dispatch)}
+      {drawCells(game, actions.putPiece)}
     </MapContainer>
   </ContentContainer>
 ;
 
 Content.propTypes = {
   game: PropTypes.object,
-  dispatch: PropTypes.func,
+  actions: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = ({ game }) => ({ game });
+const mapDispatchToProps = dispatch => ({
+  actions: bindActionCreators(allTheActions, dispatch),
+});
 
-export default connect(mapStateToProps)(Content);
+export default connect(mapStateToProps, mapDispatchToProps)(Content);

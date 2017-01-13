@@ -80,7 +80,7 @@ const Content = ({ game, actions }) =>
   <ContentContainer>
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
-      <ReplayButton visible={!!(game.win || game.full)} resetMap={actions.resetMap} />
+      <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.resetMap} />
     </WinnerDisplay>
     <PlayingPlayer
       playingPlayer={game.player.playing}

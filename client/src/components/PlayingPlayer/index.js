@@ -17,15 +17,15 @@ const PPName = styled.span`
 
 const PlayingPlayer = ({ playingPlayer, player1, player2 }) =>
   <PPContainer>
-    <PPName isPlaying={playingPlayer === player1}>{player1}</PPName>
-    <PPName isPlaying={playingPlayer === player2}>{player2}</PPName>
+    <PPName isPlaying={playingPlayer.name === player1.name}>{player1.name}</PPName>
+    <PPName isPlaying={playingPlayer.name === player2.name}>{player2.name}</PPName>
   </PPContainer>
 ;
 
 PlayingPlayer.propTypes = {
-  playingPlayer: PropTypes.string.isRequired,
-  player1: PropTypes.string.isRequired,
-  player2: PropTypes.string.isRequired,
+  playingPlayer: PropTypes.object.isRequired,
+  player1: PropTypes.object.isRequired,
+  player2: PropTypes.object.isRequired,
 };
 
 export default PlayingPlayer;

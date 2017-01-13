@@ -21,11 +21,11 @@ const Cell = styled.li`
   }
 `;
 
-const drawCells = (game, putPiece) => game.map.map((cell, key) => {
-  const { playerName1, playerName2 } = game.player;
+const drawCells = (game, putPiece) => game.board.map((cell, key) => {
+  const { player1, player2 } = game.player;
   return (
     <Cell key={key} onClick={() => putPiece(key)}>
-      {(cell === playerName1 && <Cross />) || (cell === playerName2 && <Circle />)}
+      {(cell === player1 && <Cross />) || (cell === player2 && <Circle />)}
     </Cell>
   );
 });

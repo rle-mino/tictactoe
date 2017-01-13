@@ -79,13 +79,13 @@ const WinnerMessage = styled.span`
 const Content = ({ game, actions }) =>
   <ContentContainer>
     <WinnerDisplay>
-      <WinnerMessage>{(game.win && `${game.win} WINS`) || (game.full && 'DRAW')}</WinnerMessage>
+      <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
       <ReplayButton visible={!!(game.win || game.full)} resetMap={actions.resetMap} />
     </WinnerDisplay>
     <PlayingPlayer
       playingPlayer={game.player.playing}
-      player1={game.player.playerName1}
-      player2={game.player.playerName2}
+      player1={game.player.player1}
+      player2={game.player.player2}
     />
     <MapContainer>
       <Top />

@@ -1,6 +1,5 @@
 import React from 'react';
 import chai from 'chai';
-// import sinon from 'sinon';
 import { shallow } from 'enzyme';
 
 import App from '../';

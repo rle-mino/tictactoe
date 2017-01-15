@@ -5,7 +5,7 @@ import colors from '../../colors.json';
 import { Cross, Circle } from '../../components/SpeChars';
 
 
-const Cell = styled.li`
+export const Cell = styled.li`
   flex-basis: 33.33%;
   height: 20vh;
   line-height: 20vh;

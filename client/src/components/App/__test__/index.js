@@ -10,7 +10,7 @@ import Content from '../../../containers/Content';
 const { describe, it } = global;
 const { expect } = chai;
 
-describe('[UT] <Button />', () => {
+describe('[UT] <App />', () => {
   const app = shallow(<App />);
   it('should render a <Header />', () => {
     expect(app.find(Header)).to.have.length(1);

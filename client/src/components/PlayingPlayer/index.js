@@ -8,7 +8,7 @@ const PPContainer = styled.div`
   justify-content: space-between;
 `;
 
-const PPName = styled.span`
+export const PPName = styled.span`
   color: ${props => (props.isPlaying ? colors.lightBlue : 'black')};
   padding: 1em;
   font-size: 20px;

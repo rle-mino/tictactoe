@@ -23,4 +23,4 @@ app.use(compress())
   .configure(services)
   .configure(middleware);
 
-module.exports = app;
+export default app;

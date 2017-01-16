@@ -76,8 +76,10 @@ const WinnerMessage = styled.span`
   font-size: 50px;
   text-transform: uppercase;
 `;
-const Content = ({ game, actions }) =>
+
+const Content = ({ game, actions, socket }) =>
   <ContentContainer>
+    {console.log(socket)}
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
       <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.resetMap} />
@@ -98,11 +100,12 @@ const Content = ({ game, actions }) =>
 ;
 
 Content.propTypes = {
-  game: PropTypes.object,
+  game: PropTypes.object.isRequired,
+  socket: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ game }) => ({ game });
+const mapStateToProps = ({ game, socket }) => ({ game, socket });
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(allTheActions, dispatch),
 });

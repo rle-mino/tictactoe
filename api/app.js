@@ -7,6 +7,7 @@ import rest from 'feathers-rest';
 import bodyParser from 'body-parser';
 import socketio from 'feathers-socketio';
 import middleware from './middleware';
+import configureSocket from './configureSocket';
 import services from './services';
 
 const app = feathers();
@@ -19,7 +20,7 @@ app.use(compress())
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: true }))
   .configure(rest())
-  .configure(socketio())
+  .configure(socketio(configureSocket))
   .configure(services)
   .configure(middleware);
 

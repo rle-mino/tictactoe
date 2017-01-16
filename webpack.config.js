@@ -20,14 +20,14 @@ const webpackConfig = {
     publicPath: `/assets/`,
   },
   entry: {
-    app: './src/index.js',
+    app: './client/src/index.js',
   },
   module: {
     rules: [
       {
         test:  /\.(js|jsx)$/,
         loader: 'babel-loader',
-        exclude: /node_modules/,
+        exclude: /(node_modules|server|api)/
       },
       {
         test: /\.css$/,

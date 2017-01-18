@@ -1,5 +1,6 @@
 import * as checkers from '../helpers/game/checkers';
 import initialState from '../initialState';
+import { PUT_PIECE, RESET_MAP } from '../actions/game';
 
 const putPiece = (state, where) => {
   if (state.winner) return state;
@@ -35,9 +36,9 @@ const putPiece = (state, where) => {
 
 export default (state = {}, action) => {
   switch (action.type) {
-    case 'PUT_PIECE':
+    case PUT_PIECE:
       return putPiece(state, action.payload);
-    case 'RESET_MAP':
+    case RESET_MAP:
       return initialState.game;
     default: return state;
   }

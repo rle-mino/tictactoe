@@ -4,7 +4,7 @@
 > These events can be emitted from the client
 
 ### game:put a piece
-- name: `game: put a piece`
+- name: `game:put a piece`
 - args: position(Number), id(Number), player(Object)
 - source: **client**
 - destination: service
@@ -100,7 +100,7 @@
 ---
 
 ### game:your turn
-- name: `game: your turn`
+- name: `game:your turn`
 - args: board(Array)
 - source: **service**
 - destination: client
@@ -136,7 +136,7 @@
 ---
 
 ### game:cannot put a piece
-- name: `game: cannot put a piece`
+- name: `game:cannot put a piece`
 - args: no
 - source: **service**
 - destination: client

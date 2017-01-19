@@ -1,9 +1,8 @@
-import app from './app';
+import 'dotenv/config';
+import server from './server';
 
-const port = app.get('port');
-const host = app.get('host');
-const server = app.listen(port);
+const port = process.env.SERVER_PORT;
 
-server.on('listening', () => {
-  console.log(`application started on ${host}:${port}`); // eslint-disable-line no-console
+server.listen(port, () => {
+  console.log(`application started on port ${port}`); // eslint-disable-line no-console
 });

@@ -79,7 +79,6 @@ const WinnerMessage = styled.span`
 
 const Content = ({ game, actions, socket }) =>
   <ContentContainer>
-    {console.log(socket)}
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
       <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.resetMap} />

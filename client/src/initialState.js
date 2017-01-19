@@ -1,5 +1,5 @@
-// import apiURI from './apiURI';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
+import apiURI from './apiURI';
 
 const size = 9;
 
@@ -10,6 +10,16 @@ const player1 = {
 const player2 = {
   name: 'player2',
 };
+
+const socket = io(apiURI);
+
+if (window.location.hash) {
+  // eslint-disable-next-line no-unused-vars
+  const [_, id, player] = window.location.hash.match(/^#(\w*)\[(\w*)]/);
+  socket.emit('game:join', { id, player });
+}
+
+
 const initialState = {
   game: {
     size,
@@ -22,6 +32,7 @@ const initialState = {
     winner: null,
     isFinished: false,
   },
+  socket,
 };
 
 export default initialState;

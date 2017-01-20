@@ -16,7 +16,10 @@ const socket = io(apiURI);
 if (window.location.hash) {
   // eslint-disable-next-line no-unused-vars
   const [_, id, player] = window.location.hash.match(/^#(\w*)\[(\w*)]/);
-  socket.emit('game:join', { id, player });
+  socket.emit('game:join', { id, player }, (data) => {
+    console.log(data);
+  });
+  socket.on('game:start', () => console.log('ruuuuup'));
 }
 
 

@@ -1,6 +1,5 @@
 export default class Player {
-  constructor(player, id) {
+  constructor(player) {
     this.username = player;
-    this.id = id;
   }
 }

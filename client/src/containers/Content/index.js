@@ -26,7 +26,6 @@ const MapContainer = styled.ul`
   position: relative;
   padding: 0;
   margin: 0;
-  border: 1px solid black;
 `;
 
 const Top = styled.span`
@@ -35,7 +34,7 @@ const Top = styled.span`
   left: 0%;
   top: 33.333%;
   width: 100%;
-  height: 1px;
+  height: 4px;
 `;
 
 const Bottom = styled.span`
@@ -44,7 +43,7 @@ const Bottom = styled.span`
   left: 0%;
   top: 66.666%;
   width: 100%;
-  height: 1px;
+  height: 4px;
 `;
 
 const Left = styled.span`
@@ -53,7 +52,7 @@ const Left = styled.span`
   top: 0%;
   left: 33.333%;
   height: 100%;
-  width: 1px;
+  width: 4px;
 `;
 
 const Right = styled.span`
@@ -62,7 +61,7 @@ const Right = styled.span`
   top: 0%;
   left: 66.666%;
   height: 100%;
-  width: 1px;
+  width: 4px;
 `;
 
 const WinnerDisplay = styled.div`
@@ -73,11 +72,11 @@ const WinnerDisplay = styled.div`
 `;
 
 const WinnerMessage = styled.span`
-  font-size: 50px;
+  font-size: 40px;
   text-transform: uppercase;
 `;
 
-const Content = ({ game, actions, socket }) =>
+const Content = ({ game, actions/* , socket*/ }) =>
   <ContentContainer>
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
@@ -100,7 +99,7 @@ const Content = ({ game, actions, socket }) =>
 
 Content.propTypes = {
   game: PropTypes.object.isRequired,
-  socket: PropTypes.object.isRequired,
+  // socket: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
 };
 

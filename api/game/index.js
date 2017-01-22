@@ -20,9 +20,6 @@ export default class Game extends EventEmitter {
     const nameAlreadyTaken = !!this.players[newPlayer.username];
     if (nameAlreadyTaken) return false;
     this.players = { ...this.players, [newPlayer.username]: newPlayer };
-    if (Object.keys(this.players).length === 2) {
-      this.emit('start', { message: 'game is ready' });
-    }
     return true;
   }
 

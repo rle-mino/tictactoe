@@ -38,6 +38,7 @@ class Organizer {
           message: 'joined',
           game: askedGame,
           player: newPlayer,
+          onSubscribe: () => askedGame.emit('start'),
         });
       }
       return Promise.reject({

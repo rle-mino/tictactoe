@@ -1,14 +1,14 @@
 /* eslint-disable no-param-reassign */
-const setupSocket = (socket, game, player) => {
+const setupSocket = (socket, game, player, onSubscribe) => {
   socket.game = game;
   socket.player = player;
   game.on('start', (data) => {
-    console.log('ok');
     socket.emit('game:start', data);
   });
+  if (onSubscribe) onSubscribe();
 };
 
-const responseJoin = (socket, cb) => ({ game, player }) => {
+const successJoin = (socket, cb) => ({ game, player, onSubscribe }) => {
   if (cb) {
     cb({
       status: 'success',
@@ -16,15 +16,19 @@ const responseJoin = (socket, cb) => ({ game, player }) => {
       him: game.getOtherPlayer(player.username),
     });
   }
-  setupSocket(socket, game, player);
+  setupSocket(socket, game, player, onSubscribe);
+};
+
+const failJoin = socket => ({ details }) => {
+  socket.emit('game:error', details);
 };
 
 const connector = (io, organizer) => {
   io.on('connection', (socket) => {
     socket.on('game:join', (data, cb) => {
       organizer.joinGame(data)
-        .then(responseJoin(socket, cb))
-        .catch(console.error);
+        .then(successJoin(socket, cb))
+        .catch(failJoin(socket));
     });
 
     socket.on('disconnect', () => {

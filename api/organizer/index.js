@@ -1,55 +1,79 @@
+import R from 'ramda';
 import Game from '../game';
 import Player from '../player';
+import {
+  JOINED,
+  REMOVED,
+  ISFULL,
+  NOGAME,
+  ALREADYTAKEN,
+  SUCCESS,
+  ISSPECTATOR,
+} from '../constants';
 
 class Organizer {
-  games = [];
+  games = {};
 
   leaveGame = (game, player) => {
     if (game) {
       const isEmpty = game.removePlayer(player);
       if (isEmpty) {
-        this.games = this.games.filter(party => party.id !== game.id);
+        this.games = R.omit([game.id], this.games);
       }
       return Promise.resolve({
-        details: 'player removed',
+        details: REMOVED,
       });
     }
     return Promise.reject({
-      details: 'user has no game',
+      details: NOGAME,
     });
   }
 
+  createGame = (player, id) => {
+    const newPlayer = new Player(player);
+    return [new Game(id, newPlayer), newPlayer];
+  }
+
+  setAsReady = (game, player) => {
+    try {
+      game.setAsReady(player);
+      return Promise.resolve({
+        details: SUCCESS,
+      });
+    } catch (e) {
+      return Promise.reject({
+        details: ISSPECTATOR,
+      });
+    }
+  }
+
   joinGame = ({ id, player }) => {
-    const askedGame = this.games.find(game => game.id === id);
+    const game = this.games[id];
 
-    if (askedGame) {
-      const isGameFull = askedGame.players.length === 2;
-
-      if (isGameFull) {
+    if (game) {
+      if (game.isGameFull()) {
         return Promise.reject({
-          details: 'the game is full',
+          details: ISFULL,
         });
       }
       const newPlayer = new Player(player);
-      const isAdded = askedGame.addPlayer(newPlayer);
-
-      if (isAdded === true) {
+      try {
+        game.addPlayer(newPlayer);
         return Promise.resolve({
-          message: 'joined',
-          game: askedGame,
+          message: JOINED,
+          game,
           player: newPlayer,
-          onSubscribe: () => askedGame.emit('start'),
+        });
+      } catch (e) {
+        return Promise.reject({
+          details: ALREADYTAKEN,
         });
       }
-      return Promise.reject({
-        details: 'username already taken',
-      });
     }
-    const newPlayer = new Player(player);
-    const newGame = new Game(id, newPlayer);
-    this.games = [...this.games, newGame];
+    const [newGame, newPlayer] = this.createGame(player, id);
+    this.games = { ...this.games, [newGame.id]: newGame };
     return Promise.resolve({
-      message: 'joined',
+      message: JOINED,
       game: newGame,
       player: newPlayer,
     });

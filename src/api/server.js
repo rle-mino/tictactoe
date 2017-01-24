@@ -2,12 +2,15 @@ import socketIo from 'socket.io';
 import express from 'express';
 import http from 'http';
 import connector from './connector';
-import createOrganizer from './organizer';
 
-const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
-const organizer = createOrganizer();
-connector(io, organizer);
+const createServer = (organizer, config) => new Promise((resolve) => {
+  const app = express();
+  const server = http.createServer(app);
+  const io = socketIo(server);
+  connector(io, organizer);
+  server.listen(config.api.port, () => {
+    resolve(config.api.port);
+  });
+});
 
-export default server;
+export default createServer;

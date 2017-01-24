@@ -5,11 +5,11 @@ import R from 'ramda';
 export const READY = 'ready';
 export const WAITING = 'waiting';
 
-function NameAlreadyTaken(name) {
+function ErrorNameAlreadyTaken(name) {
   this.toString = () => `${name} already taken`;
 }
 
-function IsSpectator() {
+function ErrorSpectator() {
   this.toString = () => 'this user is a spectator';
 }
 
@@ -21,13 +21,13 @@ export default class Game extends EventEmitter {
     this.players = {
       [player.username]: player,
     };
-    this.board = new Array(9).fill(null);
+    this.board = R.times(() => null, 9);
   }
 
   addPlayer = (newPlayer) => {
     const { username } = newPlayer;
     const nameAlreadyTaken = !!this.players[username];
-    if (nameAlreadyTaken) { throw new NameAlreadyTaken(username); }
+    if (nameAlreadyTaken) { throw new ErrorNameAlreadyTaken(username); }
     this.players = { ...this.players, [username]: newPlayer };
     this.emit('joined');
   }
@@ -56,7 +56,7 @@ export default class Game extends EventEmitter {
     if (this.status === READY) return;
     const confirmedPlayer = this.players[player.username];
     if (confirmedPlayer.isSpectator) {
-      throw new IsSpectator();
+      throw new ErrorSpectator();
     } else {
       confirmedPlayer.isReady = true;
       if (this.areBothReady()) {

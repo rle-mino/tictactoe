@@ -5,12 +5,18 @@ import R from 'ramda';
 export const READY = 'ready';
 export const WAITING = 'waiting';
 
-function ErrorNameAlreadyTaken(name) {
-  this.toString = () => `${name} already taken`;
+class ErrorNameAlreadyTaken extends Error {
+  constructor(name) {
+    super();
+    this.toString = () => `${name} already taken`;
+  }
 }
 
-function ErrorSpectator() {
-  this.toString = () => 'this user is a spectator';
+class ErrorSpectator extends Error {
+  constructor() {
+    super();
+    this.toString = () => 'this user is a spectator';
+  }
 }
 
 export default class Game extends EventEmitter {

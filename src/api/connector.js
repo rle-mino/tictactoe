@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import { loginfo, logerror } from './util';
 
 const setupSocket = (socket, game, player) => {
   socket.game = game;
@@ -45,8 +46,8 @@ const connector = (io, organizer) => {
     socket.on('disconnect', () => {
       const { game, player } = socket;
       organizer.leaveGame(game, player)
-        .then(console.log)
-        .catch(console.error);
+        .then(loginfo)
+        .catch(logerror);
     });
   });
 };

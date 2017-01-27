@@ -1,28 +1,25 @@
 /* eslint-disable no-param-reassign */
-import { loginfo, logerror } from './util';
+import { loginfo, logerror } from '../util';
+import gameEvent from './gameEvent';
 
-const setupSocket = (socket, game, player) => {
+const setupSocket = (socket, game, player, events) => {
   socket.game = game;
   socket.player = player;
-  game.on('start', () => socket.emit('game:start'));
-  game.on('leaved', () => socket.emit('game:leaved'));
-  game.on('joined', () => {
-    const data = {
-      id: game.id,
-      me: player,
-      him: game.getOtherPlayer(player),
-    };
-    socket.emit('game:joined', data);
-  });
+  events.start = gameEvent.start(socket);
+  events.leaved = gameEvent.leaved(socket);
+  events.joined = gameEvent.joined(socket, game, player);
+  game.on('start', events.start);
+  game.on('leaved', events.leaved);
+  game.on('joined', events.joined);
 };
 
-const successJoin = socket => ({ game, player }) => {
+const successJoin = (socket, events) => ({ game, player }) => {
   socket.emit('game:joined', {
     id: game.id,
     me: player,
     him: game.getOtherPlayer(player),
   });
-  setupSocket(socket, game, player);
+  setupSocket(socket, game, player, events);
 };
 
 const catchRequest = socket => ({ details }) => {
@@ -31,9 +28,10 @@ const catchRequest = socket => ({ details }) => {
 
 const connector = (io, organizer) => {
   io.on('connection', (socket) => {
+    const events = {};
     socket.on('game:join', (data) => {
       organizer.joinGame(data)
-        .then(successJoin(socket))
+        .then(successJoin(socket, events))
         .catch(catchRequest(socket));
     });
 
@@ -45,6 +43,11 @@ const connector = (io, organizer) => {
 
     socket.on('disconnect', () => {
       const { game, player } = socket;
+      if (game) {
+        game.removeListener('joined', events.joined);
+        game.removeListener('start', events.start);
+        game.removeListener('leaved', events.leaved);
+      }
       organizer.leaveGame(game, player)
         .then(loginfo)
         .catch(logerror);

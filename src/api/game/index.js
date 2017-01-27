@@ -51,6 +51,10 @@ export default class Game extends EventEmitter {
     return this.players[hisUsername] || null;
   }
 
+  getPlayers = () =>
+    Object.values(this.players)
+      .filter(val => val.isSpectator === false);
+
   areBothReady = () => {
     if (Object.keys(this.players).length === 2) {
       return !R.find(R.propEq('isReady', 'false'))(this.players);

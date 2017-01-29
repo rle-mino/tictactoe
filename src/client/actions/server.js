@@ -1,3 +1,3 @@
-export const JOIN = 'server/join';
-export const JOINED = 'server/joined';
-export const READY = 'server/ready';
+export const GAME_JOINED = 'game:joined';
+export const GAME_LEAVED = 'game:leaved';
+export const GAME_READY = 'game:ready';

@@ -36,6 +36,7 @@ if (window.location.hash) {
   // eslint-disable-next-line no-unused-vars
   const [_, id, player] = window.location.hash.match(/^#(\w*)\[(\w*)]/);
   store.dispatch({ type: 'socket/game:join', payload: { id, player } });
+  socket.on('reconnect', () => store.dispatch({ type: 'socket/game:join', payload: { id, player } }));
 }
 
 export default store;

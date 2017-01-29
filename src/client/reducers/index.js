@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import game from './game';
-import socket from './socket.js';
+import notifications from './notifications';
 
 export default combineReducers({
   game,
-  socket,
+  notifications,
 });

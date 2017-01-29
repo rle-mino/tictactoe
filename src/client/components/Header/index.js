@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Notifications from '../../containers/Notifications';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -16,6 +17,7 @@ export const MainTitle = styled.h1`
 const Header = () =>
   <HeaderContainer>
     <MainTitle>TicTacToe</MainTitle>
+    <Notifications />
   </HeaderContainer>
 ;
 

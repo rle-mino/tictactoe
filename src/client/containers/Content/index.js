@@ -76,7 +76,7 @@ const WinnerMessage = styled.span`
   text-transform: uppercase;
 `;
 
-const Content = ({ game, actions/* , socket*/ }) =>
+const Content = ({ game, actions }) =>
   <ContentContainer>
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
@@ -84,8 +84,8 @@ const Content = ({ game, actions/* , socket*/ }) =>
     </WinnerDisplay>
     <PlayingPlayer
       playingPlayer={game.player.playing}
-      player1={game.player.player1}
-      player2={game.player.player2}
+      me={game.player.me}
+      him={game.player.him}
     />
     <MapContainer>
       <Top />
@@ -99,7 +99,6 @@ const Content = ({ game, actions/* , socket*/ }) =>
 
 Content.propTypes = {
   game: PropTypes.object.isRequired,
-  // socket: PropTypes.object.isRequired,
   actions: PropTypes.object.isRequired,
 };
 

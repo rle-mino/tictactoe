@@ -13,7 +13,6 @@ const socketMiddleware = socket => (store) => {
   };
   socket.on('*', (event, data) => {
     store.dispatch({ type: event, payload: data });
-    console.log(event, data);
   });
   return next => (action) => {
     if (action.type && action.type.match(/^socket\//)) {

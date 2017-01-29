@@ -5,7 +5,7 @@ const player1 = {
 };
 
 const player2 = {
-  name: 'player2',
+  name: 'NO PLAYER',
 };
 
 const initialState = {
@@ -14,8 +14,8 @@ const initialState = {
     board: new Array(size).fill(null),
     player: {
       playing: player1,
-      player1,
-      player2,
+      me: player1,
+      him: player2,
     },
     winner: null,
     isFinished: false,

@@ -1,6 +1,7 @@
 import * as checkers from '../helpers/game/checkers';
 import initialState from '../initialState';
 import { PUT_PIECE, RESET_MAP } from '../actions/game';
+import { GAME_JOINED, GAME_LEAVED } from '../actions/server';
 
 const putPiece = (state, where) => {
   if (state.winner) return state;
@@ -34,10 +35,39 @@ const putPiece = (state, where) => {
   };
 };
 
+const addPlayer = (state, me, him) => ({
+  ...state,
+  player: {
+    ...state.player,
+    me: {
+      ...state.player.me,
+      name: me.username,
+    },
+    him: {
+      ...state.player.him,
+      name: him ? him.username : null,
+    },
+  },
+});
+
+const removePlayer = state => ({
+  ...state,
+  player: {
+    ...state.player,
+    me: { ...state.player.me },
+    him: { name: 'NO PLAYER' },
+  },
+});
+
 export default (state = {}, action) => {
+  const { payload } = action;
   switch (action.type) {
+    case GAME_JOINED:
+      return addPlayer(state, payload.me, payload.him);
+    case GAME_LEAVED:
+      return removePlayer(state);
     case PUT_PIECE:
-      return putPiece(state, action.payload);
+      return putPiece(state, payload);
     case RESET_MAP:
       return initialState.game;
     default: return state;

@@ -9,8 +9,8 @@ const { expect } = chai;
 
 const fakeProps = {
   playingPlayer: { name: 'test1' },
-  player1: { name: 'test1' },
-  player2: { name: 'test2' },
+  me: { name: 'test1' },
+  him: { name: 'test2' },
 };
 
 describe('[UT] <PlayingPlayer />', () => {

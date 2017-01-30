@@ -8,9 +8,17 @@ const joined = (socket, game, player) => () => {
   };
   socket.emit('game:joined', data);
 };
+const yourTurn = socket => (username) => {
+  if (socket.player.username !== username) {
+    socket.emit('game:his turn');
+  } else {
+    socket.emit('game:your turn');
+  }
+};
 
 export default {
   start,
   leaved,
   joined,
+  yourTurn,
 };

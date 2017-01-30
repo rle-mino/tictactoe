@@ -1,7 +1,12 @@
 import * as checkers from '../helpers/game/checkers';
 import initialState from '../initialState';
 import { PUT_PIECE, RESET_MAP } from '../actions/game';
-import { GAME_JOINED, GAME_LEAVED } from '../actions/server';
+import {
+  GAME_JOINED,
+  GAME_LEAVED,
+  GAME_YOUR_TURN,
+  GAME_HIS_TURN,
+} from '../actions/server';
 
 const putPiece = (state, where) => {
   if (state.winner) return state;
@@ -45,7 +50,7 @@ const addPlayer = (state, me, him) => ({
     },
     him: {
       ...state.player.him,
-      name: him ? him.username : null,
+      name: him ? him.username : 'NO PLAYER',
     },
   },
 });
@@ -54,8 +59,23 @@ const removePlayer = state => ({
   ...state,
   player: {
     ...state.player,
-    me: { ...state.player.me },
     him: { name: 'NO PLAYER' },
+  },
+});
+
+const myTurn = state => ({
+  ...state,
+  player: {
+    ...state.player,
+    playing: { ...state.player.me },
+  },
+});
+
+const hisTurn = state => ({
+  ...state,
+  player: {
+    ...state.player,
+    playing: { ...state.player.him },
   },
 });
 
@@ -66,6 +86,10 @@ export default (state = {}, action) => {
       return addPlayer(state, payload.me, payload.him);
     case GAME_LEAVED:
       return removePlayer(state);
+    case GAME_YOUR_TURN:
+      return myTurn(state);
+    case GAME_HIS_TURN:
+      return hisTurn(state);
     case PUT_PIECE:
       return putPiece(state, payload);
     case RESET_MAP:

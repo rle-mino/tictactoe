@@ -8,9 +8,11 @@ const setupSocket = (socket, game, player, events) => {
   events.start = gameEvent.start(socket);
   events.leaved = gameEvent.leaved(socket);
   events.joined = gameEvent.joined(socket, game, player);
+  events.yourTurn = gameEvent.yourTurn(socket);
   game.on('start', events.start);
   game.on('leaved', events.leaved);
   game.on('joined', events.joined);
+  game.on('your turn', events.yourTurn);
 };
 
 const successJoin = (socket, events) => ({ game, player }) => {
@@ -47,6 +49,7 @@ const connector = (io, organizer) => {
         game.removeListener('joined', events.joined);
         game.removeListener('start', events.start);
         game.removeListener('leaved', events.leaved);
+        game.removeListener('your turn', events.yourTurn);
       }
       organizer.leaveGame(game, player)
         .then(loginfo)

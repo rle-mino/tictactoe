@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import EventEmitter from 'events';
 import R from 'ramda';
+import loginfo from '../util';
 
 export const READY = 'ready';
 export const WAITING = 'waiting';
@@ -51,15 +52,16 @@ export default class Game extends EventEmitter {
     return this.players[hisUsername] || null;
   }
 
-  getPlayers = () =>
-    Object.values(this.players)
-      .filter(val => val.isSpectator === false);
+  getPlayers = () => R.pickBy(val => val.isSpectator === false, this.players);
 
-  areBothReady = () => {
-    if (Object.keys(this.players).length === 2) {
-      return !R.find(R.propEq('isReady', 'false'))(this.players);
-    }
-    return false;
+  areBothReady = () => R.values(R.pickBy(val => !!val.isReady, this.players)).length === 2;
+
+  startGame = () => {
+    this.emit('start');
+    this.status = READY;
+    const players = R.values(this.players);
+    const firstToPlay = players[Math.round((Math.random()))];
+    this.emit('your turn', firstToPlay.username);
   }
 
   setAsReady = (player) => {
@@ -70,8 +72,7 @@ export default class Game extends EventEmitter {
     } else {
       confirmedPlayer.isReady = true;
       if (this.areBothReady()) {
-        this.emit('start');
-        this.status = READY;
+        this.startGame();
       }
     }
   }

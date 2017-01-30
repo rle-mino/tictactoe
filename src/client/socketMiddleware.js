@@ -1,7 +1,4 @@
 /* eslint-disable no-console, no-param-reassign */
-import {
-
-} from './actions/server';
 
 const socketMiddleware = socket => (store) => {
   const { onevent } = socket;
@@ -12,7 +9,7 @@ const socketMiddleware = socket => (store) => {
     onevent.call(this, packet);
   };
   socket.on('*', (event, data) => {
-    store.dispatch({ type: event, payload: data });
+    store.dispatch({ type: `socket/${event}`, payload: data });
   });
   return next => (action) => {
     if (action.type && action.type.match(/^socket\//)) {

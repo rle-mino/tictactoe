@@ -1,4 +1,7 @@
-export const PUT_PIECE = 'PUT_PIECE';
+import {
+  PUT_PIECE,
+} from './server';
+
 export const RESET_MAP = 'RESET_MAP';
 
 export const putPiece = coord => ({

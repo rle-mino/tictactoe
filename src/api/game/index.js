@@ -1,10 +1,25 @@
 /* eslint-disable no-underscore-dangle */
 import EventEmitter from 'events';
 import R from 'ramda';
-import loginfo from '../util';
+import patterns from './patterns';
+import { loginfo } from '../util';
 
 export const READY = 'ready';
 export const WAITING = 'waiting';
+
+class ErrorNotYourTurn extends Error {
+  constructor() {
+    super();
+    this.toString = () => 'Not your turn';
+  }
+}
+
+class ErrorCellUnavailable extends Error {
+  constructor() {
+    super();
+    this.toString = () => 'Cell not avaible';
+  }
+}
 
 class ErrorNameAlreadyTaken extends Error {
   constructor(name) {
@@ -29,7 +44,14 @@ export default class Game extends EventEmitter {
       [player.username]: player,
     };
     this.board = R.times(() => null, 9);
+    this.playing = {};
   }
+
+  getPlayers = () => R.pickBy(val => val.isSpectator === false, this.players);
+  areBothReady = () => R.values(R.pickBy(val => !!val.isReady, this.players)).length === 2;
+  isGameFull = () => this.players.length === 2
+  findWinner = () => patterns.find(pattern => pattern(this.board));
+  checkFull = () => this.board.indexOf(null) === -1;
 
   addPlayer = (newPlayer) => {
     const { username } = newPlayer;
@@ -47,21 +69,16 @@ export default class Game extends EventEmitter {
   }
 
   getOtherPlayer = (playerA) => {
-    const hisUsername = Object.keys(this.players)
-      .find(playerB => playerB !== playerA.username);
-    return this.players[hisUsername] || null;
+    const players = this.getPlayers();
+    return R.values(players).find(playerB => !R.equals(playerB, playerA)) || null;
   }
-
-  getPlayers = () => R.pickBy(val => val.isSpectator === false, this.players);
-
-  areBothReady = () => R.values(R.pickBy(val => !!val.isReady, this.players)).length === 2;
 
   startGame = () => {
     this.emit('start');
     this.status = READY;
     const players = R.values(this.players);
-    const firstToPlay = players[Math.round((Math.random()))];
-    this.emit('your turn', firstToPlay.username);
+    this.playing = players[Math.round((Math.random()))];
+    this.emit('your turn', this.playing.username);
   }
 
   setAsReady = (player) => {
@@ -77,5 +94,39 @@ export default class Game extends EventEmitter {
     }
   }
 
-  isGameFull = () => this.players.length === 2
+  putPiece = (player, index) => {
+    if (this.status === WAITING) return;
+    if (this.board[index]) {
+      throw new ErrorCellUnavailable();
+    }
+    if (this.playing.username !== player.username) {
+      throw new ErrorNotYourTurn();
+    }
+    this.board = this.board.map((cell, i) => {
+      if (i === index && !cell) return player;
+      return cell;
+    });
+    this.emit('piece set', index);
+    this.playing = this.getOtherPlayer(player);
+
+    const isThereAWinner = this.findWinner();
+    if (isThereAWinner) {
+      this.winner = isThereAWinner(this.board);
+      this.emit('end', {
+        winner: this.winner,
+        message: 'we have a winner',
+      });
+      this.status = WAITING;
+      return;
+    }
+
+    this.full = this.checkFull();
+    if (this.full) {
+      this.emit('end', {
+        winner: null,
+        message: 'game is full',
+      });
+      this.status = WAITING;
+    }
+  }
 }

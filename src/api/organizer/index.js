@@ -1,5 +1,6 @@
 import R from 'ramda';
 import Game from '../game';
+import { logerror } from '../util';
 import Player from '../player';
 import {
   JOINED,
@@ -7,6 +8,8 @@ import {
   ISFULL,
   NOGAME,
   ALREADYTAKEN,
+  CANNOT_PUT_PIECE,
+  PIECE_SET,
   SUCCESS,
   ISSPECTATOR,
 } from '../constants';
@@ -77,6 +80,20 @@ class Organizer {
       game: newGame,
       player: newPlayer,
     });
+  }
+
+  putPiece = (game, player, index) => {
+    try {
+      game.putPiece(player, index);
+      return Promise.resolve({
+        message: PIECE_SET,
+      });
+    } catch (e) {
+      logerror(e);
+      return Promise.reject({
+        details: CANNOT_PUT_PIECE,
+      });
+    }
   }
 }
 

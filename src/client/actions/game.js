@@ -1,11 +1,11 @@
 import {
-  PUT_PIECE,
+  GAME_PUT_PIECE,
 } from './server';
 
 export const RESET_MAP = 'RESET_MAP';
 
 export const putPiece = coord => ({
-  type: PUT_PIECE,
+  type: GAME_PUT_PIECE,
   payload: coord,
 });
 

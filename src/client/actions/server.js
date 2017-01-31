@@ -5,4 +5,5 @@ export const GAME_LEAVED = 'socket/game:leaved';
 export const GAME_START = 'socket/game:start';
 export const GAME_YOUR_TURN = 'socket/game:your turn';
 export const GAME_HIS_TURN = 'socket/game:his turn';
-export const PUT_PIECE = 'socket/game:put piece';
+export const GAME_PUT_PIECE = 'socket/game:put piece';
+export const GAME_PIECE_SET = 'socket/game:piece set';

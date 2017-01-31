@@ -1,11 +1,12 @@
 import * as checkers from '../helpers/game/checkers';
 import initialState from '../initialState';
-import { PUT_PIECE, RESET_MAP } from '../actions/game';
+import { RESET_MAP } from '../actions/game';
 import {
   GAME_JOINED,
   GAME_LEAVED,
   GAME_YOUR_TURN,
   GAME_HIS_TURN,
+  GAME_PIECE_SET,
 } from '../actions/server';
 
 const putPiece = (state, where) => {
@@ -26,7 +27,7 @@ const putPiece = (state, where) => {
   const isFinished = checkers.full(newBoard);
   const winner = thereIsAWinner ? thereIsAWinner(newBoard) : null;
 
-  const { playing, player1, player2 } = state.player;
+  const { playing, me, him } = state.player;
 
   return {
     ...state,
@@ -35,7 +36,7 @@ const putPiece = (state, where) => {
     board: newBoard,
     player: {
       ...state.player,
-      playing: playing.name === player1.name ? player2 : player1,
+      playing: playing.name === me.name ? him : me,
     },
   };
 };
@@ -90,7 +91,7 @@ export default (state = {}, action) => {
       return myTurn(state);
     case GAME_HIS_TURN:
       return hisTurn(state);
-    case PUT_PIECE:
+    case GAME_PIECE_SET:
       return putPiece(state, payload);
     case RESET_MAP:
       return initialState.game;

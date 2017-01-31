@@ -5,14 +5,15 @@ import gameEvent from './gameEvent';
 const setupSocket = (socket, game, player, events) => {
   socket.game = game;
   socket.player = player;
-  events.start = gameEvent.start(socket);
-  events.leaved = gameEvent.leaved(socket);
-  events.joined = gameEvent.joined(socket, game, player);
-  events.yourTurn = gameEvent.yourTurn(socket);
-  game.on('start', events.start);
-  game.on('leaved', events.leaved);
-  game.on('joined', events.joined);
-  game.on('your turn', events.yourTurn);
+
+  events.push({ event: 'start', cb: gameEvent.start(socket) });
+  events.push({ event: 'leaved', cb: gameEvent.leaved(socket) });
+  events.push({ event: 'joined', cb: gameEvent.joined(socket) });
+  events.push({ event: 'your turn', cb: gameEvent.yourTurn(socket) });
+  events.push({ event: 'piece set', cb: gameEvent.pieceSet(socket) });
+  events.push({ event: 'end', cb: gameEvent.end(socket) });
+
+  events.forEach(listener => game.on(listener.event, listener.cb));
 };
 
 const successJoin = (socket, events) => ({ game, player }) => {
@@ -30,10 +31,10 @@ const catchRequest = socket => ({ details }) => {
 
 const connector = (io, organizer) => {
   io.on('connection', (socket) => {
-    const events = {};
+    const listeners = [];
     socket.on('game:join', (data) => {
       organizer.joinGame(data)
-        .then(successJoin(socket, events))
+        .then(successJoin(socket, listeners))
         .catch(catchRequest(socket));
     });
 
@@ -43,13 +44,16 @@ const connector = (io, organizer) => {
         .catch(catchRequest(socket));
     });
 
+    socket.on('game:put piece', (index) => {
+      const { game, player } = socket;
+      organizer.putPiece(game, player, index)
+        .catch(catchRequest(socket));
+    });
+
     socket.on('disconnect', () => {
       const { game, player } = socket;
       if (game) {
-        game.removeListener('joined', events.joined);
-        game.removeListener('start', events.start);
-        game.removeListener('leaved', events.leaved);
-        game.removeListener('your turn', events.yourTurn);
+        listeners.forEach(listener => game.removeListener(listener.event, listener.cb));
       }
       organizer.leaveGame(game, player)
         .then(loginfo)

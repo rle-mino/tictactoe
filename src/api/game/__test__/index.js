@@ -20,6 +20,8 @@ describe('class Game', () => {
         username: 'usernameTest',
         isSpectator: false,
         isReady: false,
+        setReady: game.players.usernameTest.setReady,
+        unsetReady: game.players.usernameTest.unsetReady,
       },
     });
   });
@@ -34,11 +36,15 @@ describe('class Game', () => {
         username: 'usernameTest',
         isSpectator: false,
         isReady: false,
+        setReady: game.players.usernameTest.setReady,
+        unsetReady: game.players.usernameTest.unsetReady,
       },
       usernameTest2: {
         username: 'usernameTest2',
         isSpectator: false,
         isReady: false,
+        setReady: game.players.usernameTest2.setReady,
+        unsetReady: game.players.usernameTest2.unsetReady,
       },
     });
   });
@@ -53,6 +59,8 @@ describe('class Game', () => {
       username: 'usernameTest2',
       isSpectator: false,
       isReady: false,
+      setReady: game.players.usernameTest2.setReady,
+      unsetReady: game.players.usernameTest2.unsetReady,
     });
   });
 
@@ -63,8 +71,20 @@ describe('class Game', () => {
     game.addPlayer(newPlayer2);
     const players = game.getPlayers();
     expect(players).to.deep.equal({
-      usernameTest: { username: 'usernameTest', isSpectator: false, isReady: false },
-      usernameTest2: { username: 'usernameTest2', isSpectator: false, isReady: false },
+      usernameTest: {
+        username: 'usernameTest',
+        isSpectator: false,
+        isReady: false,
+        setReady: game.players.usernameTest.setReady,
+        unsetReady: game.players.usernameTest.unsetReady,
+      },
+      usernameTest2: {
+        username: 'usernameTest2',
+        isSpectator: false,
+        isReady: false,
+        setReady: game.players.usernameTest2.setReady,
+        unsetReady: game.players.usernameTest2.unsetReady,
+      },
     });
   });
 
@@ -90,7 +110,13 @@ describe('class Game', () => {
     game.addPlayer(newPlayer2);
     game.removePlayer(newPlayer2);
     expect(game.players).to.deep.equal({
-      usernameTest: { username: 'usernameTest', isSpectator: false, isReady: false },
+      usernameTest: {
+        username: 'usernameTest',
+        isSpectator: false,
+        isReady: false,
+        setReady: game.players.usernameTest.setReady,
+        unsetReady: game.players.usernameTest.unsetReady,
+      },
     });
     const empty = game.removePlayer(newPlayer);
     expect(empty).to.equal(true);

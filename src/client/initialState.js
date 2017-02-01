@@ -1,3 +1,5 @@
+import R from 'ramda';
+
 const size = 9;
 
 const player1 = {
@@ -11,7 +13,7 @@ const player2 = {
 const initialState = {
   game: {
     size,
-    board: new Array(size).fill(null),
+    board: R.times(() => null, 9),
     player: {
       playing: player1,
       me: player1,

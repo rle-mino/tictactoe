@@ -8,3 +8,4 @@ export const ALREADYTAKEN = 'username already taken';
 export const ISSPECTATOR = 'player is spectator';
 export const CANNOT_PUT_PIECE = 'cannot put a piece';
 export const PIECE_SET = 'piece set';
+export const CANNOT_REPLAY = 'Cannot replay this game';

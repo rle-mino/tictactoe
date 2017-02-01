@@ -1,5 +1,6 @@
 import {
   GAME_PUT_PIECE,
+  GAME_REPLAY,
 } from './server';
 
 export const RESET_MAP = 'RESET_MAP';
@@ -9,6 +10,6 @@ export const putPiece = coord => ({
   payload: coord,
 });
 
-export const resetMap = () => ({
-  type: RESET_MAP,
+export const replay = () => ({
+  type: GAME_REPLAY,
 });

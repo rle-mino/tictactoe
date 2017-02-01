@@ -17,8 +17,8 @@ export const PPName = styled.span`
 
 const PlayingPlayer = ({ playingPlayer, me, him }) =>
   <PPContainer>
-    <PPName isPlaying={playingPlayer.name === me.name}>{me.name}</PPName>
-    <PPName isPlaying={playingPlayer.name === him.name}>{him.name}</PPName>
+    <PPName isPlaying={playingPlayer.name === me.name}>me: {me.name}</PPName>
+    <PPName isPlaying={playingPlayer.name === him.name}>him: {him.name}</PPName>
   </PPContainer>
 ;
 

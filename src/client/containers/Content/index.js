@@ -78,15 +78,15 @@ const WinnerMessage = styled.span`
 
 const Content = ({ game, actions }) =>
   <ContentContainer>
-    <WinnerDisplay>
-      <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
-      <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.resetMap} />
-    </WinnerDisplay>
     <PlayingPlayer
       playingPlayer={game.player.playing}
       me={game.player.me}
       him={game.player.him}
     />
+    <WinnerDisplay>
+      <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
+      <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.replay} />
+    </WinnerDisplay>
     <MapContainer>
       <Top />
       <Left />

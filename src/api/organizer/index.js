@@ -12,6 +12,7 @@ import {
   PIECE_SET,
   SUCCESS,
   ISSPECTATOR,
+  CANNOT_REPLAY,
 } from '../constants';
 
 class Organizer {
@@ -95,6 +96,20 @@ class Organizer {
       });
     }
   }
+
+  // replay = (game, player) => {
+  //   try {
+  //     game.replay(player);
+  //     Promise.resolve({
+  //       message: 'ready',
+  //     });
+  //   } catch (e) {
+  //     logerror(e);
+  //     Promise.resolve({
+  //       details: CANNOT_REPLAY,
+  //     });
+  //   }
+  // }
 }
 
 const createOrganizer = () => new Organizer();

@@ -7,34 +7,6 @@ import { loginfo } from '../util';
 export const READY = 'ready';
 export const WAITING = 'waiting';
 
-class ErrorNotYourTurn extends Error {
-  constructor() {
-    super();
-    this.toString = () => 'Not your turn';
-  }
-}
-
-class ErrorCellUnavailable extends Error {
-  constructor() {
-    super();
-    this.toString = () => 'Cell not avaible';
-  }
-}
-
-class ErrorNameAlreadyTaken extends Error {
-  constructor(name) {
-    super();
-    this.toString = () => `${name} already taken`;
-  }
-}
-
-class ErrorSpectator extends Error {
-  constructor() {
-    super();
-    this.toString = () => 'this user is a spectator';
-  }
-}
-
 export default class Game extends EventEmitter {
   constructor(id, player) {
     super();
@@ -56,7 +28,9 @@ export default class Game extends EventEmitter {
   addPlayer = (newPlayer) => {
     const { username } = newPlayer;
     const nameAlreadyTaken = !!this.players[username];
-    if (nameAlreadyTaken) { throw new ErrorNameAlreadyTaken(username); }
+    if (nameAlreadyTaken) {
+      throw new Error(`${username} already taken`);
+    }
     this.players = { ...this.players, [username]: newPlayer };
     this.emit('joined');
   }
@@ -77,7 +51,7 @@ export default class Game extends EventEmitter {
     this.emit('start');
     this.status = READY;
     const players = R.values(this.players);
-    this.playing = players[Math.round((Math.random()))];
+    this.playing = players[Math.round(Math.random())];
     this.emit('your turn', this.playing.username);
   }
 
@@ -85,22 +59,28 @@ export default class Game extends EventEmitter {
     if (this.status === READY) return;
     const confirmedPlayer = this.players[player.username];
     if (confirmedPlayer.isSpectator) {
-      throw new ErrorSpectator();
+      throw new Error('player is spectator');
     } else {
-      confirmedPlayer.isReady = true;
+      confirmedPlayer.setReady();
       if (this.areBothReady()) {
         this.startGame();
       }
     }
   }
 
+  prepareNext = () => {
+    const players = this.getPlayers();
+    R.map(el => el.unsetReady(), players);
+    this.board = R.times(() => null, 9);
+  }
+
   putPiece = (player, index) => {
     if (this.status === WAITING) return;
     if (this.board[index]) {
-      throw new ErrorCellUnavailable();
+      throw new Error('cell unavailable');
     }
     if (this.playing.username !== player.username) {
-      throw new ErrorNotYourTurn();
+      throw new Error('not your turn');
     }
     this.board = this.board.map((cell, i) => {
       if (i === index && !cell) return player;
@@ -117,6 +97,7 @@ export default class Game extends EventEmitter {
         message: 'we have a winner',
       });
       this.status = WAITING;
+      this.prepareNext();
       return;
     }
 
@@ -127,6 +108,8 @@ export default class Game extends EventEmitter {
         message: 'game is full',
       });
       this.status = WAITING;
+      this.prepareNext();
     }
   }
+
 }

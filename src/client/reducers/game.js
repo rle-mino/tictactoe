@@ -1,38 +1,28 @@
-import * as checkers from '../helpers/game/checkers';
-import initialState from '../initialState';
-import { RESET_MAP } from '../actions/game';
+// import * as checkers from '../helpers/game/checkers';
+import R from 'ramda';
 import {
   GAME_JOINED,
   GAME_LEAVED,
   GAME_YOUR_TURN,
   GAME_HIS_TURN,
   GAME_PIECE_SET,
+  GAME_END,
+  GAME_START,
 } from '../actions/server';
 
 const putPiece = (state, where) => {
   if (state.winner) return state;
+  if (state.board[where]) return state;
   const newBoard = state.board.map((cell, index) => {
     if (index === where && !cell) {
       return state.player.playing;
-    } else if (index === where) {
-      return -1;
     }
     return cell;
   });
-
-  const shouldUpdate = !newBoard.find(cell => cell === -1);
-  if (!shouldUpdate) return state;
-
-  const thereIsAWinner = checkers.win(newBoard);
-  const isFinished = checkers.full(newBoard);
-  const winner = thereIsAWinner ? thereIsAWinner(newBoard) : null;
-
   const { playing, me, him } = state.player;
 
   return {
     ...state,
-    winner,
-    isFinished,
     board: newBoard,
     player: {
       ...state.player,
@@ -80,9 +70,17 @@ const hisTurn = state => ({
   },
 });
 
+const gameEnd = (state, payload) => ({
+  ...state,
+  winner: payload.winner ? { name: payload.winner.username } : null,
+  isFinished: !payload.winner,
+});
+
 export default (state = {}, action) => {
   const { payload } = action;
   switch (action.type) {
+    case GAME_START:
+      return { ...state, board: R.times(() => null, 9), winner: null, isFinished: null };
     case GAME_JOINED:
       return addPlayer(state, payload.me, payload.him);
     case GAME_LEAVED:
@@ -93,8 +91,8 @@ export default (state = {}, action) => {
       return hisTurn(state);
     case GAME_PIECE_SET:
       return putPiece(state, payload);
-    case RESET_MAP:
-      return initialState.game;
+    case GAME_END:
+      return gameEnd(state, payload);
     default: return state;
   }
 };

@@ -1,6 +1,7 @@
 import chai from 'chai';
+import R from 'ramda';
 import game from '../game';
-import { putPiece, resetMap } from '../../actions/game';
+import { GAME_PIECE_SET } from '../../actions/server';
 
 const { describe, it } = global;
 const { expect } = chai;
@@ -15,18 +16,18 @@ const player2 = {
 
 const initialGameState = {
   size: 9,
-  board: new Array(9).fill(null),
+  board: R.times(() => null, 9),
   player: {
     playing: player1,
-    player1,
-    player2,
+    me: player1,
+    him: player2,
   },
   winner: null,
   isFinished: false,
 };
 
 describe('[UT] game reducer', () => {
-  const firstStepState = game(initialGameState, putPiece(0));
+  const firstStepState = game(initialGameState, { type: GAME_PIECE_SET, payload: 0 });
   it('should put a piece 1', () => {
     expect(firstStepState).to.deep.equal({
       size: 9,
@@ -45,13 +46,13 @@ describe('[UT] game reducer', () => {
       isFinished: false,
       player: {
         playing: player2,
-        player1,
-        player2,
+        me: player1,
+        him: player2,
       },
     });
   });
 
-  const secondStepTest = game(firstStepState, putPiece(1));
+  const secondStepTest = game(firstStepState, { type: GAME_PIECE_SET, payload: 1 });
   it('should put a piece 2', () => {
     expect(secondStepTest).to.deep.equal({
       size: 9,
@@ -70,8 +71,8 @@ describe('[UT] game reducer', () => {
       isFinished: false,
       player: {
         playing: player1,
-        player1,
-        player2,
+        me: player1,
+        him: player2,
       },
     });
   });

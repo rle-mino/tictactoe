@@ -4,4 +4,8 @@ export default class Player {
     this.isReady = false;
     this.isSpectator = false;
   }
+
+  unsetReady = () => (this.isReady = false);
+
+  setReady = () => (this.isReady = true);
 }

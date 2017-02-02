@@ -1,6 +1,7 @@
 import chai from 'chai';
 import Game from '../';
 import Player from '../../player';
+import { READY } from '../../../constants/game';
 
 const { describe, it } = global;
 const { expect } = chai;
@@ -93,11 +94,14 @@ describe('class Game', () => {
     const game = new Game('42', newPlayer);
     const newPlayer2 = new Player('usernameTest2');
     game.addPlayer(newPlayer2);
+
     const ready = game.areBothReady();
     expect(ready).to.equal(false);
+
     newPlayer2.isReady = true;
     const ready2 = game.areBothReady();
     expect(ready2).to.equal(false);
+
     newPlayer.isReady = true;
     const ready3 = game.areBothReady();
     expect(ready3).to.equal(true);
@@ -120,5 +124,106 @@ describe('class Game', () => {
     });
     const empty = game.removePlayer(newPlayer);
     expect(empty).to.equal(true);
+  });
+
+  it('should set a player as ready', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    expect(newPlayer.isReady).to.equal(false);
+    game.setAsReady(newPlayer);
+    expect(newPlayer.isReady).to.equal(true);
+    game.setAsReady(newPlayer2);
+    expect(newPlayer2.isReady).to.equal(true);
+  });
+
+  it('should set a player as ready', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    expect(game.status).to.equal(READY);
+  });
+
+  it('should put a piece 1/3', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    const playing = game.playing;
+    game.putPiece(game.playing, 0);
+    expect(game.board).to.deep.equal([
+      playing,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+    ]);
+  });
+
+  it('should put a piece 2/3', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    const playing0 = game.playing;
+    game.putPiece(game.playing, 0);
+    const playing1 = game.playing;
+    game.putPiece(game.playing, 1);
+    game.putPiece(game.playing, 2);
+    game.putPiece(game.playing, 3);
+    game.putPiece(game.playing, 4);
+    expect(game.board).to.deep.equal([
+      playing0,
+      playing1,
+      playing0,
+      playing1,
+      playing0,
+      null,
+      null,
+      null,
+      null,
+    ]);
+  });
+
+  it('should put a piece 3/3', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    const playing0 = game.playing;
+    game.putPiece(game.playing, 0);
+    const playing1 = game.playing;
+    game.putPiece(game.playing, 2);
+    game.putPiece(game.playing, 1);
+    game.putPiece(game.playing, 3);
+    game.putPiece(game.playing, 5);
+    game.putPiece(game.playing, 4);
+    game.putPiece(game.playing, 6);
+    game.putPiece(game.playing, 7);
+    expect(game.board).to.deep.equal([
+      playing0,
+      playing0,
+      playing1,
+      playing1,
+      playing1,
+      playing0,
+      playing0,
+      playing1,
+      null,
+    ]);
   });
 });

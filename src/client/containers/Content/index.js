@@ -102,7 +102,7 @@ Content.propTypes = {
   actions: PropTypes.object.isRequired,
 };
 
-const mapStateToProps = ({ game, socket }) => ({ game, socket });
+const mapStateToProps = ({ game }) => ({ game });
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(allTheActions, dispatch),
 });

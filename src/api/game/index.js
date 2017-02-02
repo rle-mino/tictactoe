@@ -3,9 +3,16 @@ import EventEmitter from 'events';
 import R from 'ramda';
 import patterns from './patterns';
 import { loginfo } from '../util';
-
-export const READY = 'ready';
-export const WAITING = 'waiting';
+import {
+  START,
+  LEFT,
+  JOINED,
+  YOUR_TURN,
+  PIECE_SET,
+  END,
+  READY,
+  WAITING,
+} from '../../constants/game';
 
 export default class Game extends EventEmitter {
   constructor(id, player) {
@@ -32,13 +39,13 @@ export default class Game extends EventEmitter {
       throw new Error(`${username} already taken`);
     }
     this.players = { ...this.players, [username]: newPlayer };
-    this.emit('joined');
+    this.emit(JOINED);
   }
 
   removePlayer = (playerToRemove) => {
     this.players = R.omit([playerToRemove.username], this.players);
     this.status = WAITING;
-    this.emit('leaved');
+    this.emit(LEFT);
     return R.isEmpty(this.players);
   }
 
@@ -52,7 +59,7 @@ export default class Game extends EventEmitter {
     this.status = READY;
     const players = R.values(this.players);
     this.playing = players[Math.round(Math.random())];
-    this.emit('your turn', this.playing.username);
+    this.emit(YOUR_TURN, this.playing.username);
   }
 
   setAsReady = (player) => {
@@ -62,6 +69,7 @@ export default class Game extends EventEmitter {
       throw new Error('player is spectator');
     } else {
       confirmedPlayer.setReady();
+      this.emit(READY, player.username);
       if (this.areBothReady()) {
         this.startGame();
       }
@@ -86,13 +94,13 @@ export default class Game extends EventEmitter {
       if (i === index && !cell) return player;
       return cell;
     });
-    this.emit('piece set', index);
+    this.emit(PIECE_SET, index);
     this.playing = this.getOtherPlayer(player);
 
     const isThereAWinner = this.findWinner();
     if (isThereAWinner) {
       this.winner = isThereAWinner(this.board);
-      this.emit('end', {
+      this.emit(END, {
         winner: this.winner,
         message: 'we have a winner',
       });
@@ -103,7 +111,7 @@ export default class Game extends EventEmitter {
 
     this.full = this.checkFull();
     if (this.full) {
-      this.emit('end', {
+      this.emit(END, {
         winner: null,
         message: 'game is full',
       });

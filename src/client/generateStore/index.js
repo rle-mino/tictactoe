@@ -6,7 +6,11 @@ import apiURI from '../apiURI';
 import socketMiddleware from '../socketMiddleware';
 import reducers from '../reducers';
 import initialState from '../initialState';
-import { GAME_JOIN, GAME_READY } from '../actions/server';
+import {
+  SOCKET_JOIN,
+  SOCKET_READY,
+  SOCKET_JOINED,
+} from '../../constants/socket';
 
 const logger = createLogger();
 
@@ -39,11 +43,11 @@ const store = generateStore(process.env.NODE_ENV);
 if (window.location.hash) {
   // eslint-disable-next-line no-unused-vars
   const [_, id, player] = window.location.hash.match(/^#(\w*)\[(\w*)]/);
-  store.dispatch({ type: GAME_JOIN, payload: { id, player } });
+  store.dispatch({ type: SOCKET_JOIN, payload: { id, player } });
   socket.on('reconnect', () => {
-    store.dispatch({ type: GAME_JOIN, payload: { id, player } });
+    store.dispatch({ type: SOCKET_JOIN, payload: { id, player } });
   });
-  socket.on('game:joined', () => store.dispatch({ type: GAME_READY }));
+  socket.on(SOCKET_JOINED, () => store.dispatch({ type: SOCKET_READY }));
 }
 
 export default store;

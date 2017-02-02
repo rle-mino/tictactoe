@@ -31,7 +31,9 @@ const drawCells = (game, putPiece) => game.board.map((cell, key) => {
 
   return (
     <Cell key={key} onClick={requestPut} playing={playing.name === me.name}>
-      {(R.equals(cell, me) && <Cross />) || (R.equals(cell, him) && <Circle />)}
+      {(R.equals((cell || {}).name, me.name) && <Cross />)
+      ||
+      (R.equals((cell || {}).name, him.name) && <Circle />)}
     </Cell>
   );
 });

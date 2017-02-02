@@ -1,15 +1,13 @@
 import {
-  GAME_PUT_PIECE,
-  GAME_REPLAY,
-} from './server';
-
-export const RESET_MAP = 'RESET_MAP';
+  SOCKET_PUT_PIECE,
+  SOCKET_REPLAY,
+} from '../../constants/socket';
 
 export const putPiece = coord => ({
-  type: GAME_PUT_PIECE,
+  type: SOCKET_PUT_PIECE,
   payload: coord,
 });
 
 export const replay = () => ({
-  type: GAME_REPLAY,
+  type: SOCKET_REPLAY,
 });

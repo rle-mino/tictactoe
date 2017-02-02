@@ -1,14 +1,16 @@
 // import * as checkers from '../helpers/game/checkers';
 import R from 'ramda';
 import {
-  GAME_JOINED,
-  GAME_LEAVED,
-  GAME_YOUR_TURN,
-  GAME_HIS_TURN,
-  GAME_PIECE_SET,
-  GAME_END,
-  GAME_START,
-} from '../actions/server';
+  SOCKET_JOINED,
+  SOCKET_LEFT,
+  SOCKET_YOUR_TURN,
+  SOCKET_HIS_TURN,
+  SOCKET_PIECE_SET,
+  SOCKET_END,
+  SOCKET_START,
+  SOCKET_REPLAY,
+  SOCKET_OTHER_READY,
+} from '../../constants/socket';
 
 const putPiece = (state, where) => {
   if (state.winner) return state;
@@ -73,25 +75,62 @@ const hisTurn = state => ({
 const gameEnd = (state, payload) => ({
   ...state,
   winner: payload.winner ? { name: payload.winner.username } : null,
+  player: {
+    ...state.player,
+    me: {
+      ...state.player.me,
+      isReady: false,
+    },
+    him: {
+      ...state.player.him,
+      isReady: false,
+    },
+  },
   isFinished: !payload.winner,
+});
+
+const setHimAsReady = state => ({
+  ...state,
+  player: {
+    ...state.player,
+    him: {
+      ...state.player.him,
+      isReady: true,
+    },
+  },
+});
+
+const setMeAsReady = state => ({
+  ...state,
+  player: {
+    ...state.player,
+    me: {
+      ...state.player.me,
+      isReady: true,
+    },
+  },
 });
 
 export default (state = {}, action) => {
   const { payload } = action;
   switch (action.type) {
-    case GAME_START:
+    case SOCKET_START:
       return { ...state, board: R.times(() => null, 9), winner: null, isFinished: null };
-    case GAME_JOINED:
+    case SOCKET_JOINED:
       return addPlayer(state, payload.me, payload.him);
-    case GAME_LEAVED:
+    case SOCKET_LEFT:
       return removePlayer(state);
-    case GAME_YOUR_TURN:
+    case SOCKET_YOUR_TURN:
       return myTurn(state);
-    case GAME_HIS_TURN:
+    case SOCKET_HIS_TURN:
       return hisTurn(state);
-    case GAME_PIECE_SET:
+    case SOCKET_PIECE_SET:
       return putPiece(state, payload);
-    case GAME_END:
+    case SOCKET_OTHER_READY:
+      return setHimAsReady(state);
+    case SOCKET_REPLAY:
+      return setMeAsReady(state);
+    case SOCKET_END:
       return gameEnd(state, payload);
     default: return state;
   }

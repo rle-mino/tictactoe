@@ -4,10 +4,12 @@ const size = 9;
 
 const player1 = {
   name: 'player1',
+  isReady: false,
 };
 
 const player2 = {
   name: 'NO PLAYER',
+  isReady: false,
 };
 
 const initialState = {

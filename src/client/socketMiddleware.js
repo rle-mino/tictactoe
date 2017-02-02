@@ -9,11 +9,11 @@ const socketMiddleware = socket => (store) => {
     onevent.call(this, packet);
   };
   socket.on('*', (event, data) => {
-    store.dispatch({ type: `socket/${event}`, payload: data });
+    store.dispatch({ type: event, payload: data });
   });
   return next => (action) => {
     if (action.type && action.type.match(/^socket\//)) {
-      socket.emit(action.type.replace('socket/', ''), action.payload);
+      socket.emit(action.type, action.payload);
     }
     return next(action);
   };

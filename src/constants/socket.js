@@ -1,0 +1,12 @@
+export const SOCKET_JOIN = 'socket/game:join';
+export const SOCKET_READY = 'socket/game:ready';
+export const SOCKET_OTHER_READY = 'socket/game:other player ready';
+export const SOCKET_JOINED = 'socket/game:joined';
+export const SOCKET_LEFT = 'socket/game:left';
+export const SOCKET_START = 'socket/game:start';
+export const SOCKET_YOUR_TURN = 'socket/game:your turn';
+export const SOCKET_HIS_TURN = 'socket/game:his turn';
+export const SOCKET_PUT_PIECE = 'socket/game:put piece';
+export const SOCKET_PIECE_SET = 'socket/game:piece set';
+export const SOCKET_END = 'socket/game:end';
+export const SOCKET_REPLAY = 'socket/game:replay';

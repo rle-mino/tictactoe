@@ -1,15 +1,15 @@
 // import * as checkers from '../helpers/game/checkers';
 import R from 'ramda';
 import {
-  SOCKET_JOINED,
-  SOCKET_LEFT,
-  SOCKET_YOUR_TURN,
-  SOCKET_HIS_TURN,
-  SOCKET_PIECE_SET,
-  SOCKET_END,
-  SOCKET_START,
-  SOCKET_REPLAY,
-  SOCKET_OTHER_READY,
+  JOINED,
+  LEFT,
+  YOUR_TURN,
+  HIS_TURN,
+  PIECE_SET,
+  END,
+  START,
+  REPLAY,
+  OTHER_READY,
 } from '../../constants/socket';
 
 const putPiece = (state, where) => {
@@ -114,23 +114,23 @@ const setMeAsReady = state => ({
 export default (state = {}, action) => {
   const { payload } = action;
   switch (action.type) {
-    case SOCKET_START:
+    case START:
       return { ...state, board: R.times(() => null, 9), winner: null, isFinished: null };
-    case SOCKET_JOINED:
+    case JOINED:
       return addPlayer(state, payload.me, payload.him);
-    case SOCKET_LEFT:
+    case LEFT:
       return removePlayer(state);
-    case SOCKET_YOUR_TURN:
+    case YOUR_TURN:
       return myTurn(state);
-    case SOCKET_HIS_TURN:
+    case HIS_TURN:
       return hisTurn(state);
-    case SOCKET_PIECE_SET:
+    case PIECE_SET:
       return putPiece(state, payload);
-    case SOCKET_OTHER_READY:
+    case OTHER_READY:
       return setHimAsReady(state);
-    case SOCKET_REPLAY:
+    case REPLAY:
       return setMeAsReady(state);
-    case SOCKET_END:
+    case END:
       return gameEnd(state, payload);
     default: return state;
   }

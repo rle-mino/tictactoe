@@ -7,10 +7,12 @@ import socketMiddleware from '../socketMiddleware';
 import reducers from '../reducers';
 import initialState from '../initialState';
 import {
-  SOCKET_JOIN,
-  SOCKET_READY,
-  SOCKET_JOINED,
+  JOIN,
+  READY,
+  JOINED,
 } from '../../constants/socket';
+
+const ACTION = 'action';
 
 const logger = createLogger();
 
@@ -43,11 +45,15 @@ const store = generateStore(process.env.NODE_ENV);
 if (window.location.hash) {
   // eslint-disable-next-line no-unused-vars
   const [_, id, player] = window.location.hash.match(/^#(\w*)\[(\w*)]/);
-  store.dispatch({ type: SOCKET_JOIN, payload: { id, player } });
+  store.dispatch({ type: JOIN, payload: { id, player } });
   socket.on('reconnect', () => {
-    store.dispatch({ type: SOCKET_JOIN, payload: { id, player } });
+    store.dispatch({ type: JOIN, payload: { id, player } });
   });
-  socket.on(SOCKET_JOINED, () => store.dispatch({ type: SOCKET_READY }));
+  socket.on(ACTION, ({ type }) => {
+    if (type === JOINED) {
+      store.dispatch({ type: READY });
+    }
+  });
 }
 
 export default store;

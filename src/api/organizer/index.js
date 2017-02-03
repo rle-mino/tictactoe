@@ -1,19 +1,14 @@
 import R from 'ramda';
 import Game from '../game';
-import { logerror } from '../util';
+import { logerror, loginfo } from '../util';
 import Player from '../player';
 import {
-  JOINED,
-  REMOVED,
-  ISFULL,
-  NOGAME,
+  IS_FULL,
+  NO_GAME,
   ALREADYTAKEN,
   CANNOT_PUT_PIECE,
-  PIECE_SET,
-  SUCCESS,
-  ISSPECTATOR,
-  CANNOT_REPLAY,
-} from '../constants';
+  IS_SPECTATOR,
+} from '../../constants/error';
 
 class Organizer {
   games = {};
@@ -24,12 +19,10 @@ class Organizer {
       if (isEmpty) {
         this.games = R.omit([game.id], this.games);
       }
-      return Promise.resolve({
-        details: REMOVED,
-      });
+      return Promise.resolve();
     }
     return Promise.reject({
-      details: NOGAME,
+      details: NO_GAME,
     });
   }
 
@@ -41,12 +34,11 @@ class Organizer {
   setAsReady = (game, player) => {
     try {
       game.setAsReady(player);
-      return Promise.resolve({
-        details: SUCCESS,
-      });
+      return Promise.resolve();
     } catch (e) {
+      console.log(e);
       return Promise.reject({
-        details: ISSPECTATOR,
+        details: IS_SPECTATOR,
       });
     }
   }
@@ -57,14 +49,13 @@ class Organizer {
     if (game) {
       if (game.isGameFull()) {
         return Promise.reject({
-          details: ISFULL,
+          details: IS_FULL,
         });
       }
       const newPlayer = new Player(player);
       try {
         game.addPlayer(newPlayer);
         return Promise.resolve({
-          message: JOINED,
           game,
           player: newPlayer,
         });
@@ -77,7 +68,6 @@ class Organizer {
     const [newGame, newPlayer] = this.createGame(player, id);
     this.games = { ...this.games, [newGame.id]: newGame };
     return Promise.resolve({
-      message: JOINED,
       game: newGame,
       player: newPlayer,
     });
@@ -86,9 +76,7 @@ class Organizer {
   putPiece = (game, player, index) => {
     try {
       game.putPiece(player, index);
-      return Promise.resolve({
-        message: PIECE_SET,
-      });
+      return Promise.resolve();
     } catch (e) {
       logerror(e);
       return Promise.reject({
@@ -96,20 +84,6 @@ class Organizer {
       });
     }
   }
-
-  // replay = (game, player) => {
-  //   try {
-  //     game.replay(player);
-  //     Promise.resolve({
-  //       message: 'ready',
-  //     });
-  //   } catch (e) {
-  //     logerror(e);
-  //     Promise.resolve({
-  //       details: CANNOT_REPLAY,
-  //     });
-  //   }
-  // }
 }
 
 const createOrganizer = () => new Organizer();

@@ -12,7 +12,7 @@ import {
   END,
   READY,
   WAITING,
-} from '../../constants/game';
+} from '../../constants/socket';
 
 export default class Game extends EventEmitter {
   constructor(id, player) {
@@ -55,7 +55,7 @@ export default class Game extends EventEmitter {
   }
 
   startGame = () => {
-    this.emit('start');
+    this.emit(START);
     this.status = READY;
     const players = R.values(this.players);
     this.playing = players[Math.round(Math.random())];

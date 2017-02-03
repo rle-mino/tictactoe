@@ -1,7 +1,7 @@
 import chai from 'chai';
 import Game from '../';
 import Player from '../../player';
-import { READY } from '../../../constants/game';
+import { READY } from '../../../constants/socket';
 
 const { describe, it } = global;
 const { expect } = chai;

@@ -1,13 +1,13 @@
 import {
-  SOCKET_PUT_PIECE,
-  SOCKET_REPLAY,
+  PUT_PIECE,
+  REPLAY,
 } from '../../constants/socket';
 
 export const putPiece = coord => ({
-  type: SOCKET_PUT_PIECE,
+  type: PUT_PIECE,
   payload: coord,
 });
 
 export const replay = () => ({
-  type: SOCKET_REPLAY,
+  type: REPLAY,
 });

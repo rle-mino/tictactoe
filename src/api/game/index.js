@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 import R from 'ramda';
 import patterns from './patterns';
-import { loginfo } from '../util';
+// import { loginfo } from '../util';
 import {
   START,
   LEFT,
@@ -26,11 +26,11 @@ export default class Game extends EventEmitter {
     this.playing = {};
   }
 
-  getPlayers = () => R.pickBy(val => val.isSpectator === false, this.players);
-  areBothReady = () => R.values(R.pickBy(val => !!val.isReady, this.players)).length === 2;
-  isGameFull = () => this.players.length === 2
-  findWinner = () => patterns.find(pattern => pattern(this.board));
-  checkFull = () => this.board.indexOf(null) === -1;
+  getPlayers = () => R.values(this.players);
+  areBothReady = () => R.values(R.pickBy(val => !!val.isReady, this.players)).length === 2
+  isGameFull = () => R.values(this.players).filter(player => !player.isSpectator).length > 1
+  findWinner = () => patterns.find(pattern => pattern(this.board))
+  checkFull = () => this.board.indexOf(null) === -1
 
   addPlayer = (newPlayer) => {
     const { username } = newPlayer;
@@ -49,10 +49,8 @@ export default class Game extends EventEmitter {
     return R.isEmpty(this.players);
   }
 
-  getOtherPlayer = (playerA) => {
-    const players = this.getPlayers();
-    return R.values(players).find(playerB => !R.equals(playerB, playerA)) || null;
-  }
+  getOtherPlayer = playerA =>
+    R.values(this.players).find(playerB => !R.equals(playerB, playerA)) || null;
 
   startGame = () => {
     this.emit(START);
@@ -65,14 +63,10 @@ export default class Game extends EventEmitter {
   setAsReady = (player) => {
     if (this.status === READY) return;
     const confirmedPlayer = this.players[player.username];
-    if (confirmedPlayer.isSpectator) {
-      throw new Error('player is spectator');
-    } else {
-      confirmedPlayer.setReady();
-      this.emit(READY, player.username);
-      if (this.areBothReady()) {
-        this.startGame();
-      }
+    confirmedPlayer.setReady();
+    this.emit(READY, player.username);
+    if (this.areBothReady()) {
+      this.startGame();
     }
   }
 

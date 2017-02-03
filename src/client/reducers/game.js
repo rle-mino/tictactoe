@@ -33,8 +33,9 @@ const putPiece = (state, where) => {
   };
 };
 
-const addPlayer = (state, me, him) => ({
+const addPlayer = (state, me, him, id) => ({
   ...state,
+  name: id,
   player: {
     ...state.player,
     me: {
@@ -117,7 +118,7 @@ export default (state = {}, action) => {
     case START:
       return { ...state, board: R.times(() => null, 9), winner: null, isFinished: null };
     case JOINED:
-      return addPlayer(state, payload.me, payload.him);
+      return addPlayer(state, payload.me, payload.him, payload.id);
     case LEFT:
       return removePlayer(state);
     case YOUR_TURN:

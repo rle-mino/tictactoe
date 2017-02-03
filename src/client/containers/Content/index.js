@@ -16,8 +16,10 @@ const ContentContainer = styled.div`
 `;
 
 const MapContainer = styled.ul`
-  height: 60vh;
-  width: 60vh;
+  height: 70vw;
+  width: 70vw;
+  max-width: 60vh;
+  max-height: 60vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -76,8 +78,13 @@ const WinnerMessage = styled.span`
   text-transform: uppercase;
 `;
 
+const NameID = styled.h3`
+  font-size: 30px;
+`;
+
 const Content = ({ game, actions }) =>
   <ContentContainer>
+    <NameID>{game.name}</NameID>
     <PlayingPlayer
       playingPlayer={game.player.playing}
       me={game.player.me}
@@ -85,7 +92,10 @@ const Content = ({ game, actions }) =>
     />
     <WinnerDisplay>
       <WinnerMessage>{(game.winner && `${game.winner.name} WINS`) || (game.isFinished && 'DRAW')}</WinnerMessage>
-      <ReplayButton visible={!!(game.winner || game.isFinished)} resetMap={actions.replay} />
+      <ReplayButton
+        visible={!!(game.winner || game.isFinished) && !game.player.me.isReady}
+        resetMap={actions.replay}
+      />
     </WinnerDisplay>
     <MapContainer>
       <Top />

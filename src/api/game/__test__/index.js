@@ -19,7 +19,6 @@ describe('class Game', () => {
     expect(game.players).to.deep.equal({
       usernameTest: {
         username: 'usernameTest',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest.setReady,
         unsetReady: game.players.usernameTest.unsetReady,
@@ -35,14 +34,12 @@ describe('class Game', () => {
     expect(game.players).to.deep.equal({
       usernameTest: {
         username: 'usernameTest',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest.setReady,
         unsetReady: game.players.usernameTest.unsetReady,
       },
       usernameTest2: {
         username: 'usernameTest2',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest2.setReady,
         unsetReady: game.players.usernameTest2.unsetReady,
@@ -58,7 +55,6 @@ describe('class Game', () => {
     const otherPlayer = game.getOtherPlayer(newPlayer);
     expect(otherPlayer).to.deep.equal({
       username: 'usernameTest2',
-      isSpectator: false,
       isReady: false,
       setReady: game.players.usernameTest2.setReady,
       unsetReady: game.players.usernameTest2.unsetReady,
@@ -71,22 +67,20 @@ describe('class Game', () => {
     const newPlayer2 = new Player('usernameTest2');
     game.addPlayer(newPlayer2);
     const players = game.getPlayers();
-    expect(players).to.deep.equal({
-      usernameTest: {
+    expect(players).to.deep.equal([
+      {
         username: 'usernameTest',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest.setReady,
         unsetReady: game.players.usernameTest.unsetReady,
       },
-      usernameTest2: {
+      {
         username: 'usernameTest2',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest2.setReady,
         unsetReady: game.players.usernameTest2.unsetReady,
       },
-    });
+    ]);
   });
 
   it('should know if both players are ready', () => {
@@ -116,7 +110,6 @@ describe('class Game', () => {
     expect(game.players).to.deep.equal({
       usernameTest: {
         username: 'usernameTest',
-        isSpectator: false,
         isReady: false,
         setReady: game.players.usernameTest.setReady,
         unsetReady: game.players.usernameTest.unsetReady,
@@ -225,5 +218,27 @@ describe('class Game', () => {
       playing1,
       null,
     ]);
+  });
+
+  it('should throw an error when you try to put a piece on a unavailable cell', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    game.putPiece(game.playing, 0);
+
+    expect(() => game.putPiece(game.playing, 0)).to.throw('cell unavailable');
+  });
+
+  it('should not add a player if there is two', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    expect(game.isGameFull()).to.equal(true);
+    game.removePlayer(newPlayer2);
+    expect(game.isGameFull()).to.equal(false);
   });
 });

@@ -1,6 +1,6 @@
 import R from 'ramda';
 import Game from '../game';
-import { logerror, loginfo } from '../util';
+import { logerror/* , loginfo*/ } from '../util';
 import Player from '../player';
 import {
   IS_FULL,
@@ -36,7 +36,6 @@ class Organizer {
       game.setAsReady(player);
       return Promise.resolve();
     } catch (e) {
-      console.log(e);
       return Promise.reject({
         details: IS_SPECTATOR,
       });

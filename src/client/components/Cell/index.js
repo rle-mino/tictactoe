@@ -7,7 +7,7 @@ import { Cross, Circle } from '../../components/SpeChars';
 
 export const Cell = styled.li`
   flex-basis: 33.33%;
-  height: 20vh;
+  height: 33.33%;
   line-height: 20vh;
   vertical-align: middle;
   cursor: ${props => (props.playing ? 'pointer' : 'default')};

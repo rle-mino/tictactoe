@@ -1,7 +1,7 @@
 import chai from 'chai';
 import R from 'ramda';
 import game from '../game';
-import { SOCKET_PIECE_SET } from '../../../constants/socket';
+import { PIECE_SET } from '../../../constants/socket';
 
 const { describe, it } = global;
 const { expect } = chai;
@@ -27,7 +27,7 @@ const initialGameState = {
 };
 
 describe('[UT] game reducer', () => {
-  const firstStepState = game(initialGameState, { type: SOCKET_PIECE_SET, payload: 0 });
+  const firstStepState = game(initialGameState, { type: PIECE_SET, payload: 0 });
   it('should put a piece 1', () => {
     expect(firstStepState).to.deep.equal({
       size: 9,
@@ -52,7 +52,7 @@ describe('[UT] game reducer', () => {
     });
   });
 
-  const secondStepTest = game(firstStepState, { type: SOCKET_PIECE_SET, payload: 1 });
+  const secondStepTest = game(firstStepState, { type: PIECE_SET, payload: 1 });
   it('should put a piece 2', () => {
     expect(secondStepTest).to.deep.equal({
       size: 9,

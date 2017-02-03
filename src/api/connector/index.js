@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { loginfo, logerror } from '../util';
+import { logerror } from '../util';
 import {
   start,
   left,
@@ -24,22 +24,28 @@ import {
   ACTION,
 } from '../../constants/socket';
 
-const setupSocket = (socket, game, player, listeners) => {
+const setupSocket = (socket, game, player) => {
   socket.game = game;
   socket.player = player;
 
-  listeners.push({ event: START, cb: start(socket) });
-  listeners.push({ event: LEFT, cb: left(socket) });
-  listeners.push({ event: JOINED, cb: joined(socket, game, player) });
-  listeners.push({ event: YOUR_TURN, cb: yourTurn(socket) });
-  listeners.push({ event: PIECE_SET, cb: pieceSet(socket) });
-  listeners.push({ event: END, cb: end(socket) });
-  listeners.push({ event: READY, cb: otherReady(socket) });
+  const events = [
+    { name: START, cb: start(socket) },
+    { name: LEFT, cb: left(socket) },
+    { name: JOINED, cb: joined(socket, game, player) },
+    { name: YOUR_TURN, cb: yourTurn(socket) },
+    { name: PIECE_SET, cb: pieceSet(socket) },
+    { name: END, cb: end(socket) },
+    { name: READY, cb: otherReady(socket) },
+  ];
 
-  listeners.forEach(listener => game.on(listener.event, listener.cb));
+  socket.onLeave = () => {
+    events.forEach(event => game.removeListener(event.name, event.cb));
+  };
+
+  events.forEach(event => game.on(event.name, event.cb));
 };
 
-const successJoin = (socket, listeners) => ({ game, player }) => {
+const successJoin = socket => ({ game, player }) => {
   socket.emit(ACTION, {
     type: JOINED,
     payload: {
@@ -48,7 +54,7 @@ const successJoin = (socket, listeners) => ({ game, player }) => {
       him: game.getOtherPlayer(player),
     },
   });
-  setupSocket(socket, game, player, listeners);
+  setupSocket(socket, game, player);
 };
 
 const catchRequest = socket => ({ details }) => {
@@ -57,10 +63,9 @@ const catchRequest = socket => ({ details }) => {
 
 const connector = (io, organizer) => {
   io.on('connection', (socket) => {
-    const listeners = [];
     socket.on(JOIN, (data) => {
       organizer.joinGame(data)
-        .then(successJoin(socket, listeners))
+        .then(successJoin(socket))
         .catch(catchRequest(socket));
     });
 
@@ -84,11 +89,8 @@ const connector = (io, organizer) => {
 
     socket.on('disconnect', () => {
       const { game, player } = socket;
-      if (game) {
-        listeners.forEach(listener => game.removeListener(listener.event, listener.cb));
-      }
+      if (socket.onLeave) socket.onLeave();
       organizer.leaveGame(game, player)
-        .then(loginfo)
         .catch(logerror);
     });
   });

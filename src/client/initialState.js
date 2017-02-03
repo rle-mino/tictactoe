@@ -14,6 +14,7 @@ const player2 = {
 
 const initialState = {
   game: {
+    name: 'YOU HAVEN\'T JOINED A GAME YET',
     size,
     board: R.times(() => null, 9),
     player: {

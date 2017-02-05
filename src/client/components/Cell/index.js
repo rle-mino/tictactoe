@@ -21,21 +21,20 @@ export const Cell = styled.li`
   }
 `;
 
-const drawCells = (game, putPiece) => game.board.map((cell, key) => {
-  const { me, him, playing } = game.player;
-  const requestPut = () => {
-    if (playing.name === me.name) {
-      putPiece(key);
-    }
-  };
+export const requestPut = (playing, me, putPiece, key) => () => {
+  if (playing.name === me.name) putPiece(key);
+};
 
-  return (
-    <Cell key={key} onClick={requestPut} playing={playing.name === me.name}>
-      {(R.equals((cell || {}).name, me.name) && <Cross />)
-      ||
-      (R.equals((cell || {}).name, him.name) && <Circle />)}
-    </Cell>
-  );
-});
+const drawCells = ({ board, player: { me, him, playing } }, putPiece) => board.map((cell, key) =>
+  <Cell
+    key={key}
+    onClick={requestPut(playing, me, putPiece, key)}
+    playing={playing.name === me.name}
+  >
+    {(R.equals((cell || {}).name, me.name) && <Cross />)
+    ||
+    (R.equals((cell || {}).name, him.name) && <Circle />)}
+  </Cell>
+);
 
 export default drawCells;

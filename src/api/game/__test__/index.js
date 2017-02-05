@@ -1,4 +1,5 @@
 import chai from 'chai';
+import R from 'ramda';
 import Game from '../';
 import Player from '../../player';
 import { READY } from '../../../constants/socket';
@@ -24,6 +25,13 @@ describe('class Game', () => {
         unsetReady: game.players.usernameTest.unsetReady,
       },
     });
+  });
+
+  it('should throw if the username is already taken', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest');
+    expect(() => game.addPlayer(newPlayer2)).to.throw('username already taken');
   });
 
   it('should add another player', () => {
@@ -232,6 +240,18 @@ describe('class Game', () => {
     expect(() => game.putPiece(game.playing, 0)).to.throw('cell unavailable');
   });
 
+  it('should throw an error when you try to put a piece not your turn', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    const firstPlaying = game.playing;
+    game.putPiece(game.playing, 0);
+    expect(() => game.putPiece(firstPlaying, 1)).to.throw('not your turn');
+  });
+
   it('should not add a player if there is two', () => {
     const newPlayer = new Player('usernameTest');
     const game = new Game('42', newPlayer);
@@ -240,5 +260,36 @@ describe('class Game', () => {
     expect(game.isGameFull()).to.equal(true);
     game.removePlayer(newPlayer2);
     expect(game.isGameFull()).to.equal(false);
+  });
+
+  it('should end the game once she\'s full | DRAW', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    game.putPiece(game.playing, 0);
+    game.putPiece(game.playing, 2);
+    game.putPiece(game.playing, 1);
+    game.putPiece(game.playing, 3);
+    game.putPiece(game.playing, 5);
+    game.putPiece(game.playing, 4);
+    game.putPiece(game.playing, 6);
+    game.putPiece(game.playing, 7);
+    game.putPiece(game.playing, 8);
+    expect(game.board).to.deep.equal(R.times(() => null, 9));
+  });
+
+  it('should end the game once she\'s full | DRAW', () => {
+    const newPlayer = new Player('usernameTest');
+    const game = new Game('42', newPlayer);
+    const newPlayer2 = new Player('usernameTest2');
+    game.addPlayer(newPlayer2);
+    game.setAsReady(newPlayer);
+    game.setAsReady(newPlayer2);
+    R.times(index => game.putPiece(game.playing, index), 9);
+    game.putPiece(game.playing, 8);
+    expect(game.board).to.deep.equal(R.times(() => null, 9));
   });
 });

@@ -36,7 +36,7 @@ export default class Game extends EventEmitter {
     const { username } = newPlayer;
     const nameAlreadyTaken = !!this.players[username];
     if (nameAlreadyTaken) {
-      throw new Error(`${username} already taken`);
+      throw new Error('username already taken');
     }
     this.players = { ...this.players, [username]: newPlayer };
     this.emit(JOINED);
